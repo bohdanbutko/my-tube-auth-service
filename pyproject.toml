@@ -8,8 +8,19 @@ authors = ["Bohdan Butko"]
 python = "^3.9"
 fastapi = "^0.111.0"
 pydantic = "^2.7.1"
+passlib = "^1.7.4"
+uvicorn = "^0.27.1"
+python-jose = "^3.3.0"
+python-multipart = "^0.0.9"
+pyjwt = "^2.8.0"
+bcrypt = "^4.1.2"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+pytest-mock = "^3.14.0"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
