@@ -1,4 +1,4 @@
-FROM python:3.13-alpine
+FROM python:3.14-alpine
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -6,12 +6,11 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 COPY poetry.lock pyproject.toml /app/
+COPY ./src /app/src
 
 RUN pip install poetry && \
     poetry config virtualenvs.create false && \
-    poetry install --no-dev
-
-COPY ./src /app/src
+    poetry install --only main
 
 EXPOSE 8000
 

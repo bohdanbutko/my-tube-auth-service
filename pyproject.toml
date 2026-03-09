@@ -3,6 +3,12 @@ name = "my-tube-auth-service"
 version = "0.1.0"
 description = ""
 authors = ["Bohdan Butko"]
+packages = [
+    { include = "api", from = "src" },
+    { include = "application", from = "src" },
+    { include = "domain", from = "src" },
+    { include = "infrastructure", from = "src" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -18,9 +24,6 @@ bcrypt = "^4.1.2"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
 pytest-mock = "^3.14.0"
-
-[tool.pytest.ini_options]
-pythonpath = ["."]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
