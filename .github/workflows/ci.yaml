@@ -53,5 +53,8 @@ jobs:
       - name: Load Docker image
         run: docker load < my-tube-auth-service.tar
 
+      - name: Run type checks in container
+        run: docker run --rm -v "$PWD:/app" -w /app my-tube-auth-service uv run --frozen --group dev ty check
+
       - name: Run tests in container
         run: docker run --rm -v "$PWD:/app" -w /app my-tube-auth-service uv run --frozen --group dev pytest tests

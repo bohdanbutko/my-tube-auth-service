@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 
-from src.api.routes import auth_router
 from src.api.exception_handlers import (
-    user_not_found_exception_handler,
     invalid_credentials_exception_handler,
+    user_not_found_exception_handler,
 )
-from src.domain.exceptions import UserNotFoundException, InvalidCredentialsException
+from src.api.routes import auth_router
+from src.domain.exceptions import InvalidCredentialsException, UserNotFoundException
 
 app = FastAPI()
 
