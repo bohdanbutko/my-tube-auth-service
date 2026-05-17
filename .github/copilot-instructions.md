@@ -14,7 +14,7 @@
   - `src/infrastructure`: Database access, external API clients, infrastructure code.
   - `src/api`: API routes, controllers, interface-related code.
 - Tests are in the `tests` directory, mirroring the `src` structure.
-- Poetry is used for dependency management and packaging; `pyproject.toml` is configured accordingly.
+- `uv` is used for dependency management and locking; `pyproject.toml` and `uv.lock` are the source of truth.
 - All package and internal directories should have `__init__.py` files for reliable imports.
 - Python version is defined in `pyproject.toml`.
 - Dockerfiles and Kubernetes manifests are in the `deploy` directory, organized by environment (e.g., `deploy/dev`, `deploy/prod`).
@@ -31,7 +31,7 @@
 
 ## Tooling
 
-- Poetry virtual environment is created in-project (`.venv/`).
+- `uv` virtual environment is created in-project (`.venv/`).
 - Docker and docker-compose are used for local development and testing.
 - Each repository is a standalone microservice, with its own CI/CD pipeline and deployment configuration.
 

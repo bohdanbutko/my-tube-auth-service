@@ -1,30 +1,26 @@
-[tool.poetry]
+[project]
 name = "my-tube-auth-service"
 version = "0.1.0"
 description = ""
-authors = ["Bohdan Butko"]
-packages = [
-    { include = "api", from = "src" },
-    { include = "application", from = "src" },
-    { include = "domain", from = "src" },
-    { include = "infrastructure", from = "src" },
+authors = [{ name = "Bohdan Butko", email = "bohdanbutko@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.9,<4.0"
+dependencies = [
+    "fastapi>=0.111.0,<0.112.0",
+    "pydantic>=2.7.1,<3.0.0",
+    "passlib>=1.7.4,<2.0.0",
+    "uvicorn>=0.27.1,<0.28.0",
+    "python-jose>=3.3.0,<4.0.0",
+    "python-multipart>=0.0.9,<0.0.10",
+    "pyjwt>=2.8.0,<3.0.0",
+    "bcrypt>=4.1.2,<5.0.0",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-fastapi = "^0.111.0"
-pydantic = "^2.7.1"
-passlib = "^1.7.4"
-uvicorn = "^0.27.1"
-python-jose = "^3.3.0"
-python-multipart = "^0.0.9"
-pyjwt = "^2.8.0"
-bcrypt = "^4.1.2"
+[dependency-groups]
+dev = ["pytest>=8.3.4,<9.0.0", "pytest-mock>=3.14.0,<4.0.0"]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.3.4"
-pytest-mock = "^3.14.0"
+[tool.uv]
+package = false
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.pytest.ini_options]
+pythonpath = ["."]
