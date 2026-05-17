@@ -1,3 +1,3 @@
-from src.domain.repositories.user_repository import UserRepository
+from src.domain.repositories.identity_repository import IdentityRepository
 
-__all__ = ["UserRepository"]
+__all__ = ["IdentityRepository"]

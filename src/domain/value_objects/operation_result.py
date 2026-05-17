@@ -1,10 +1,12 @@
-from pydantic import BaseModel
 from typing import Any, Optional
+from dataclasses import asdict, dataclass
 
 
-class OperationResult(BaseModel):
+@dataclass(frozen=True)
+class OperationResult:
     success: bool
     message: Optional[str] = None
     data: Optional[Any] = None
 
-    model_config = {"frozen": True}
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)

@@ -1,5 +1,4 @@
 import pytest
-from pydantic import ValidationError
 from src.domain.value_objects import Email
 
 
@@ -14,14 +13,14 @@ def test_valid_email():
 
 
 def test_invalid_email():
-    # Invalid email addresses should raise ValidationError
-    with pytest.raises(ValidationError):
+    # Invalid email addresses should raise ValueError
+    with pytest.raises(ValueError):
         Email(email="not_an_email")
 
-    with pytest.raises(ValidationError):
+    with pytest.raises(ValueError):
         Email(email="missing@tld")
 
-    with pytest.raises(ValidationError):
+    with pytest.raises(ValueError):
         Email(email="@missingname.com")
 
 
@@ -31,4 +30,4 @@ def test_email_immutability():
 
     # Attempting to modify attributes should raise an exception
     with pytest.raises(Exception):
-        email.email = "modified@example.com"
+        setattr(email, "email", "modified@example.com")

@@ -1,8 +1,10 @@
-from pydantic import BaseModel, Field
+from dataclasses import asdict, dataclass, field
 
 
-class Token(BaseModel):
+@dataclass(frozen=True)
+class Token:
     access_token: str
-    token_type: str = Field(default="bearer")
+    token_type: str = field(default="bearer")
 
-    model_config = {"frozen": True}
+    def to_dict(self) -> dict[str, str]:
+        return asdict(self)

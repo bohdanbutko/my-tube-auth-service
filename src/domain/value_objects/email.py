@@ -1,17 +1,24 @@
-from pydantic import BaseModel, EmailStr, Field
+import re
+from dataclasses import dataclass
 
 
-class Email(BaseModel):
-    email: EmailStr = Field(...)
+EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
-    def __str__(self):
-        return str(self.email)
 
-    def __eq__(self, other):
+@dataclass(frozen=True)
+class Email:
+    email: str
+
+    def __post_init__(self) -> None:
+        if not EMAIL_PATTERN.match(self.email):
+            raise ValueError(f"Invalid email address: {self.email}")
+
+    def __str__(self) -> str:
+        return self.email
+
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, str):
             return self.email == other
         if isinstance(other, Email):
             return self.email == other.email
         return False
-
-    model_config = {"frozen": True}

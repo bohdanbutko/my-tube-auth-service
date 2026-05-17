@@ -1,7 +1,10 @@
+import os
 from datetime import datetime, timedelta, timezone
+from typing import Any
+
 import jwt
 
-from src.domain.entities import User
+from src.domain.entities import Identity
 from src.domain.services import TokenService
 from src.domain.value_objects import Token
 
@@ -11,10 +14,24 @@ class JWTTokenService(TokenService):
         self.secret_key = secret_key
         self.algorithm = algorithm
 
+    @classmethod
+    def from_env(cls) -> "JWTTokenService":
+        return cls(
+            secret_key=os.getenv(
+                "JWT_SECRET_KEY",
+                "dev-secret-key-change-me-for-production-32b",
+            ),
+            algorithm=os.getenv("JWT_ALGORITHM", "HS256"),
+        )
+
     def create_access_token(
-        self, user: User, expires_delta: timedelta | None = None
+        self, identity: Identity, expires_delta: timedelta | None = None
     ) -> Token:
-        to_encode = {"sub": str(user.id), "email": str(user.email), "roles": user.roles}
+        to_encode: dict[str, Any] = {
+            "sub": str(identity.subject_id),
+            "email": str(identity.email),
+            "channels": identity.channel_claims(),
+        }
 
         if expires_delta:
             expire = datetime.now(timezone.utc) + expires_delta
@@ -22,11 +39,12 @@ class JWTTokenService(TokenService):
             expire = datetime.now(timezone.utc) + timedelta(minutes=15)
 
         to_encode.update({"exp": expire})
+
         encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
 
         return Token(access_token=encoded_jwt, token_type="bearer")
 
-    def verify_token(self, token: str) -> dict[str, any] | None:
+    def verify_token(self, token: str) -> dict[str, Any] | None:
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
             return payload

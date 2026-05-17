@@ -1,5 +1,3 @@
-from src.domain.entities.user import User
-from src.domain.entities.role import Role
-from src.domain.entities.permission import Permission
+from src.domain.entities.identity import Identity
 
-__all__ = ["User", "Role", "Permission"]
+__all__ = ["Identity"]

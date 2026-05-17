@@ -39,10 +39,10 @@ def test_operation_result_immutability():
 
     # Act & Assert
     with pytest.raises(Exception):
-        result.success = False
+        setattr(result, "success", False)
 
     with pytest.raises(Exception):
-        result.message = "Modified message"
+        setattr(result, "message", "Modified message")
 
     with pytest.raises(Exception):
-        result.data = {"some": "data"}
+        setattr(result, "data", {"some": "data"})

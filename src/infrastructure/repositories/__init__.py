@@ -1,3 +1,3 @@
-from .in_memory_user_repository import InMemoryUserRepository
+from .in_memory_identity_repository import InMemoryIdentityRepository
 
-__all__ = ["InMemoryUserRepository"]
+__all__ = ["InMemoryIdentityRepository"]

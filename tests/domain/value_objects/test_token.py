@@ -26,7 +26,7 @@ def test_token_immutability():
 
     # Act & Assert
     with pytest.raises(Exception):
-        token.access_token = "modified_token"
+        setattr(token, "access_token", "modified_token")
 
     with pytest.raises(Exception):
-        token.token_type = "modified_type"
+        setattr(token, "token_type", "modified_type")
