@@ -2,21 +2,60 @@
 
 Authentication and authorization microservice for MyTube, built with FastAPI.
 
+This service provisions auth identities, authenticates credentials, issues JWT
+access tokens, and verifies access tokens for other MyTube services.
+
 ## Requirements
 
 - Python 3.14 (or another version compatible with `>=3.14,<3.15`)
 - `uv` installed: https://docs.astral.sh/uv/
+- Docker and Docker Compose, if running the service in a container
 
-## Install Dependencies
+## Environment
+
+Create a local `.env` file from the example:
+
+```bash
+cp .env.example .env
+```
+
+Required environment variables:
+
+- `JWT_SECRET_KEY`: private server-side secret used to sign and verify JWTs.
+- `JWT_ALGORITHM`: JWT signing algorithm. Local default is `HS256`.
+
+## Run Locally With uv
+
+Install dependencies:
 
 ```bash
 uv sync --dev
 ```
 
-## Run The API
+Start the API:
 
 ```bash
-uv run uvicorn src.api.server:app --host 0.0.0.0 --port 8000 --reload
+uv run uvicorn src.api.server:app --host 0.0.0.0 --port 8000 --reload --env-file .env
+```
+
+## Run With Docker
+
+Build and start the service:
+
+```bash
+docker compose up --build
+```
+
+The API will be available at:
+
+```text
+http://localhost:8000
+```
+
+Stop the service:
+
+```bash
+docker compose down
 ```
 
 ## API Surface
@@ -24,6 +63,62 @@ uv run uvicorn src.api.server:app --host 0.0.0.0 --port 8000 --reload
 - `POST /api/v1/identities` provisions an auth identity and stores hashed credentials.
 - `POST /api/v1/login` authenticates credentials and returns a JWT access token.
 - `GET /api/v1/verify-token` validates an access token and returns its claims.
+- `GET /api/v1/health` returns a simple local/internal health check.
+
+### Provision Identity
+
+```http
+POST /api/v1/identities
+Content-Type: application/json
+```
+
+```json
+{
+  "subject_id": "11111111-1111-4111-8111-111111111111",
+  "email": "user@example.com",
+  "password": "Password123!",
+  "channel_accesses": [
+    {
+      "channel_id": "22222222-2222-4222-8222-222222222222",
+      "role": "owner"
+    }
+  ]
+}
+```
+
+### Login
+
+```http
+POST /api/v1/login
+Content-Type: application/x-www-form-urlencoded
+```
+
+```text
+username=user@example.com
+password=Password123!
+```
+
+Successful response:
+
+```json
+{
+  "access_token": "<jwt>",
+  "token_type": "bearer"
+}
+```
+
+### Verify Token
+
+```http
+GET /api/v1/verify-token
+Authorization: Bearer <jwt>
+```
+
+### Health
+
+```http
+GET /api/v1/health
+```
 
 ## Run Tests
 
@@ -31,6 +126,20 @@ uv run uvicorn src.api.server:app --host 0.0.0.0 --port 8000 --reload
 uv run pytest tests
 ```
 
+## Quality Checks
+
+```bash
+uv run ruff check .
+uv run ruff format .
+uv run ty check
+```
+
+## Docker And Kubernetes
+
+The `Dockerfile` defines how to build the service image. Docker Compose is used
+for local development only. Kubernetes deployments should use an image built
+from this Dockerfile and pushed to a container registry.
+
 ## Lockfile
 
-This project uses `uv.lock` as the lockfile and does not use Poetry.
+This project uses `uv.lock` as the lockfile.

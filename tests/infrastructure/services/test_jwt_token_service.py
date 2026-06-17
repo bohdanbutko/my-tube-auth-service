@@ -136,3 +136,36 @@ def test_verify_token_failure_invalid_token_mocked(mocked_token_service):
     # Assert
     assert payload is None
     mock_decode.assert_called_once()
+
+
+def test_from_env_uses_required_jwt_secret_key(monkeypatch):
+    monkeypatch.setenv("JWT_SECRET_KEY", "test-secret-key")
+    monkeypatch.setenv("JWT_ALGORITHM", "HS256")
+
+    service = JWTTokenService.from_env()
+
+    assert service.secret_key == "test-secret-key"
+    assert service.algorithm == "HS256"
+
+
+def test_from_env_uses_default_algorithm(monkeypatch):
+    monkeypatch.setenv("JWT_SECRET_KEY", "test-secret-key")
+    monkeypatch.delenv("JWT_ALGORITHM", raising=False)
+
+    service = JWTTokenService.from_env()
+
+    assert service.algorithm == "HS256"
+
+
+def test_from_env_rejects_missing_jwt_secret_key(monkeypatch):
+    monkeypatch.delenv("JWT_SECRET_KEY", raising=False)
+
+    with pytest.raises(RuntimeError, match="JWT_SECRET_KEY"):
+        JWTTokenService.from_env()
+
+
+def test_from_env_rejects_blank_jwt_secret_key(monkeypatch):
+    monkeypatch.setenv("JWT_SECRET_KEY", " ")
+
+    with pytest.raises(RuntimeError, match="JWT_SECRET_KEY"):
+        JWTTokenService.from_env()

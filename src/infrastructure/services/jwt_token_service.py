@@ -16,12 +16,13 @@ class JWTTokenService(TokenService):
 
     @classmethod
     def from_env(cls) -> "JWTTokenService":
+        secret_key = os.getenv("JWT_SECRET_KEY")
+        if not secret_key or not secret_key.strip():
+            raise RuntimeError("JWT_SECRET_KEY environment variable is required")
+
         return cls(
-            secret_key=os.getenv(
-                "JWT_SECRET_KEY",
-                "dev-secret-key-change-me-for-production-32b",
-            ),
-            algorithm=os.getenv("JWT_ALGORITHM", "HS256"),
+            secret_key=secret_key,
+            algorithm=os.getenv("JWT_ALGORITHM") or "HS256",
         )
 
     def create_access_token(

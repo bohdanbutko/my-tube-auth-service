@@ -18,6 +18,11 @@ router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/login")
 
 
+@router.get("/health")
+def health():
+    return JSONResponse(status_code=200, content={"status": "ok"})
+
+
 @router.post("/identities")
 def provision_identity(request: ProvisionIdentityRequest):
     command = ProvisionIdentityCommand.model_validate(request.model_dump())

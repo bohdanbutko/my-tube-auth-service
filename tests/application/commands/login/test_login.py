@@ -14,7 +14,9 @@ from src.infrastructure.repositories import InMemoryIdentityRepository
 
 
 @pytest.fixture(autouse=True)
-def clear_repository():
+def clear_repository(monkeypatch):
+    monkeypatch.setenv("JWT_SECRET_KEY", "test-secret-key-with-at-least-32-bytes")
+    monkeypatch.setenv("JWT_ALGORITHM", "HS256")
     InMemoryIdentityRepository().clear()
 
 
