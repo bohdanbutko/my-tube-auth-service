@@ -1,5 +1,6 @@
-from fastapi import FastAPI
 from typing import cast
+
+from fastapi import FastAPI
 from starlette.types import ExceptionHandler
 
 from src.api.exception_handlers import (

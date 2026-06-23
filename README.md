@@ -13,16 +13,32 @@ access tokens, and verifies access tokens for other MyTube services.
 
 ## Environment
 
-Create a local `.env` file from the example:
+Use a separate environment file for each runtime:
 
 ```bash
-cp .env.example .env
+cp .env.local.example .env.local
+cp .env.docker.example .env.docker
 ```
 
-Required environment variables:
+Environment variables:
 
 - `JWT_SECRET_KEY`: private server-side secret used to sign and verify JWTs.
 - `JWT_ALGORITHM`: JWT signing algorithm. Local default is `HS256`.
+- `DATABASE_URL`: optional PostgreSQL connection URL. If it is not set, the
+  service uses the in-memory repository.
+
+`.env.local` is used when running the service directly on the host:
+
+```env
+DATABASE_URL=postgresql+psycopg://<username>:<password>@localhost:5432/<database_name>
+```
+
+`.env.docker` is used by Docker Compose. Because PostgreSQL runs in a separate
+container exposed through the host, it uses `host.docker.internal`:
+
+```env
+DATABASE_URL=postgresql+psycopg://<username>:<password>@host.docker.internal:5432/<database_name>
+```
 
 ## Run Locally With uv
 
@@ -35,7 +51,7 @@ uv sync --dev
 Start the API:
 
 ```bash
-uv run uvicorn src.api.server:app --host 0.0.0.0 --port 8000 --reload --env-file .env
+uv run uvicorn src.api.server:app --host 0.0.0.0 --port 8000 --reload --env-file .env.local
 ```
 
 ## Run With Docker
@@ -80,7 +96,7 @@ Content-Type: application/json
   "channel_accesses": [
     {
       "channel_id": "22222222-2222-4222-8222-222222222222",
-      "role": "owner"
+      "role": "channel_owner"
     }
   ]
 }
@@ -124,6 +140,29 @@ GET /api/v1/health
 
 ```bash
 uv run pytest tests
+```
+
+## Database Migrations
+
+This service uses Alembic for database migrations. `DATABASE_URL` must point to
+the auth-service database before running migration commands.
+
+Apply all migrations:
+
+```bash
+uv run --env-file .env.local alembic upgrade head
+```
+
+Rollback the latest migration:
+
+```bash
+uv run --env-file .env.local alembic downgrade -1
+```
+
+Show the current migration version:
+
+```bash
+uv run --env-file .env.local alembic current
 ```
 
 ## Quality Checks
