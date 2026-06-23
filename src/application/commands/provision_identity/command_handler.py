@@ -9,12 +9,12 @@ from src.domain.value_objects import (
     Password,
     Role,
 )
-from src.infrastructure.repositories import InMemoryIdentityRepository
+from src.infrastructure.repositories import get_identity_repository
 from src.infrastructure.services import BcryptPasswordHashingService
 
 
 def provision_identity_handler(command: ProvisionIdentityCommand) -> dict:
-    repository = InMemoryIdentityRepository()
+    repository = get_identity_repository()
     if repository.find_by_email(str(command.email)):
         raise IdentityAlreadyExistsException(str(command.email))
 

@@ -3,12 +3,12 @@ from datetime import timedelta
 from src.application.commands.login.command import LoginCommand
 from src.domain.exceptions import InvalidCredentialsException
 from src.domain.value_objects import Password
-from src.infrastructure.repositories import InMemoryIdentityRepository
+from src.infrastructure.repositories import get_identity_repository
 from src.infrastructure.services import BcryptPasswordHashingService, JWTTokenService
 
 
 def login_handler(command: LoginCommand) -> dict:
-    repository = InMemoryIdentityRepository()
+    repository = get_identity_repository()
     password_service = BcryptPasswordHashingService()
     token_service = JWTTokenService.from_env()
 
