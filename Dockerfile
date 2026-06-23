@@ -13,6 +13,8 @@ RUN pip install --no-cache-dir uv && \
     uv sync --frozen --no-dev --no-install-project
 
 COPY ./src /app/src
+COPY ./migrations /app/migrations
+COPY ./alembic.ini /app/alembic.ini
 
 EXPOSE 8000
 

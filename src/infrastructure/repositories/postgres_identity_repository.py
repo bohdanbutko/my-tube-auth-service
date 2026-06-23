@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import Engine, delete, select
+from sqlalchemy import Connection, Engine, delete, select
 from sqlalchemy.dialects.postgresql import insert
 
 from src.domain.entities import Identity
@@ -54,32 +54,33 @@ class PostgresIdentityRepository(IdentityRepository):
 
     def find_by_email(self, email: str) -> Identity | None:
         statement = select(identities_table).where(identities_table.c.email == email)
-        with self.engine.begin() as connection:
+
+        with self.engine.connect() as connection:
             row = connection.execute(statement).mappings().one_or_none()
             if not row:
                 return None
 
-            return self._to_identity(row)
+            return self._to_identity(connection, row)
 
     def find_by_subject_id(self, subject_id: UUID) -> Identity | None:
         statement = select(identities_table).where(
             identities_table.c.subject_id == subject_id
         )
-        with self.engine.begin() as connection:
+
+        with self.engine.connect() as connection:
             row = connection.execute(statement).mappings().one_or_none()
             if not row:
                 return None
 
-            return self._to_identity(row)
+            return self._to_identity(connection, row)
 
-    def _to_identity(self, identity_row) -> Identity:
+    def _to_identity(self, connection: Connection, identity_row) -> Identity:
         channel_accesses_statement = select(identity_channel_accesses_table).where(
             identity_channel_accesses_table.c.subject_id == identity_row["subject_id"]
         )
-        with self.engine.begin() as connection:
-            channel_access_rows = (
-                connection.execute(channel_accesses_statement).mappings().all()
-            )
+        channel_access_rows = (
+            connection.execute(channel_accesses_statement).mappings().all()
+        )
 
         channel_accesses = []
         for channel_access_row in channel_access_rows:
