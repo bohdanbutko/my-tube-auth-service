@@ -11,7 +11,8 @@ from src.infrastructure.repositories.postgres_identity_repository import (
 
 
 def get_identity_repository() -> IdentityRepository:
-    if os.getenv("DATABASE_URL"):
+    database_url = os.getenv("DATABASE_URL")
+    if database_url and database_url.strip():
         return PostgresIdentityRepository(create_engine_from_env())
 
     return InMemoryIdentityRepository()

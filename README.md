@@ -37,7 +37,7 @@ DATABASE_URL=postgresql+psycopg://<username>:<password>@localhost:5432/<database
 container exposed through the host, it uses `host.docker.internal`:
 
 ```env
-DATABASE_URL=postgresql+psycopg://<username>:<password>@host.docker.internal:5432/<databasename>
+DATABASE_URL=postgresql+psycopg://<username>:<password>@host.docker.internal:5432/<database_name>
 ```
 
 ## Run Locally With uv
@@ -96,7 +96,7 @@ Content-Type: application/json
   "channel_accesses": [
     {
       "channel_id": "22222222-2222-4222-8222-222222222222",
-      "role": "owner"
+      "role": "channel_owner"
     }
   ]
 }
